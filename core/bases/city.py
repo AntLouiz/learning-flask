@@ -4,6 +4,7 @@ from sqlalchemy import (
     Integer
 )
 from base import Base
+from base import ma
 
 
 class City(Base):
@@ -18,3 +19,9 @@ class City(Base):
     def __init__(self, name, uf):
         self.name = name
         self.uf = uf
+
+
+class CitySchema(ma.Schema):
+
+    class Meta:
+        fields = ('name', 'uf')
