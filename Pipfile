@@ -15,6 +15,7 @@ marshmallow-sqlalchemy = "*"
 slugify = "*"
 flask-migrate = "*"
 pytest-flask = "*"
+flask-restful = "*"
 
 [requires]
 python_version = "3.6"
