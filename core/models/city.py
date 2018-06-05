@@ -1,6 +1,5 @@
 from slugify import slugify
-from base import db
-from base import ma
+from database import db, ma
 
 
 class City(db.Model):

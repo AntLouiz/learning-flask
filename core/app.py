@@ -1,5 +1,6 @@
 from flask import request, jsonify
-from base import app, db
+from database import db
+from base import app
 from models.city import City, city_schema, cities_schema
 
 # - generate the database schema
