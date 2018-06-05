@@ -20,8 +20,11 @@ def list_cities():
 
 
 @app.route('/cities/<slug>', methods=['GET'])
-def get_city():
-    pass
+def get_city(slug=None):
+    city = City.query.filter_by(slug=slug).first()
+    result = city_schema.dump(city)
+
+    return jsonify(result.data)
 
 
 @app.route('/cities', methods=['POST'])
