@@ -1,3 +1,4 @@
 from decouple import config
 
-DB_URL = config('DB_URL')
+DB_URI = config('DB_URI')
+TEST_DB_URI = config('TEST_DB_URI')
