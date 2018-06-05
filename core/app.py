@@ -10,7 +10,7 @@ session = Session()
 
 
 @app.route('/')
-def hello():
+def index():
     return "Hello World"
 
 
@@ -22,8 +22,13 @@ def list_cities():
     return jsonify(result.data)
 
 
+@app.route('/cities/<:slug>', methods=['GET'])
+def get_city():
+    pass
+
+
 @app.route('/cities', methods=['POST'])
-def add_cities():
+def add_city():
     city_name = request.form['name']
     city_uf = request.form['uf']
 
@@ -36,6 +41,16 @@ def add_cities():
     result = city_schema.dump(new_city)
 
     return jsonify(result.data)
+
+
+@app.route('/cities/<:id>', methods=['PUT'])
+def update_city():
+    pass
+
+
+@app.route('/cities/<:id>', methods=['DELETE'])
+def delete_city():
+    pass
 
 
 if __name__ == '__main__':
