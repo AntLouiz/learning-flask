@@ -27,6 +27,6 @@ def test_list_new_cities_on_database(client):
     db.session.bulk_save_objects(cities)
     db.session.commit()
 
-    cities = City.query.count()
+    cities_count = City.query.count()
 
-    assert cities == 3
+    assert cities_count == 3
