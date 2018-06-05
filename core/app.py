@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from base import Base, Session, engine, app
-from bases.city import City, CitySchema
+from bases.city import City, city_schema, cities_schema
 
 # - generate the database schema
 Base.metadata.create_all(engine)
@@ -14,12 +14,12 @@ def hello():
     return "Hello World"
 
 
-@app.route('/cities')
+@app.route('/cities', methods=['GET'])
 def list_cities():
     cities = session.query(City).all()
-    city_schema = CitySchema()
+    result = cities_schema.dump(cities)
 
-    return city_schema.jsonify(cities)
+    return jsonify(result.data)
 
 
 @app.route('/cities', methods=['POST'])
@@ -28,13 +28,14 @@ def add_cities():
     city_uf = request.form['uf']
 
     new_city = City(city_name, city_uf)
-    city_schema = CitySchema()
 
     session.add(new_city)
 
     session.commit()
 
-    return city_schema.jsonify(new_city)
+    result = city_schema.dump(new_city)
+
+    return jsonify(result.data)
 
 
 if __name__ == '__main__':

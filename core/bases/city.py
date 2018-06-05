@@ -25,3 +25,7 @@ class CitySchema(ma.Schema):
 
     class Meta:
         fields = ('name', 'uf')
+
+
+city_schema = CitySchema()
+cities_schema = CitySchema(many=True)
