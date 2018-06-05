@@ -24,14 +24,25 @@ def main():
     session.add(fortaleza)
     session.add(person)
 
-    # - commiting and close
     session.commit()
 
+    # - selecting the cities
     search_query = session.query(City).all()
 
+    print("Cities:")
     for city in search_query:
-        print(city.name)
+        print("\t-{}".format(city.name))
 
+    # - making a join
+    search_query = session.query(Person).join(Person.city)
+
+    for person in search_query:
+        print("First name: {} \nCity: {}".format(
+            person.first_name,
+            person.city.name
+        ))
+
+    # - deleting the data
     session.query(Person).delete()
     session.query(City).delete()
     session.commit()
