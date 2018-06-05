@@ -13,4 +13,5 @@ def create_app(name, test=False):
 
     return app
 
+
 app = create_app(__name__)
