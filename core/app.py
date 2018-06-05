@@ -21,7 +21,7 @@ def list_cities():
 
 @app.route('/cities/<slug>', methods=['GET'])
 def get_city(slug=None):
-    city = City.query.filter_by(slug=slug).first()
+    city = City.query.filter_by(slug=slug).first_or_404()
     result = city_schema.dump(city)
 
     return jsonify(result.data)
