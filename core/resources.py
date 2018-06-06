@@ -19,8 +19,10 @@ class CityResource(Resource):
         db.session.commit()
 
         result = city_schema.dump(new_city)
+        response = jsonify(result.data)
+        response.status_code = 201
 
-        return jsonify(result.data)
+        return response
 
 
 api.add_resource(CityResource, '/cities', methods=['GET', 'POST'])
