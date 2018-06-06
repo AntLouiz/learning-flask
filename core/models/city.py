@@ -22,6 +22,20 @@ class City(db.Model):
 
         return self
 
+    @classmethod
+    def save_all(cls, data):
+        if type(data) is not list:
+            raise TypeError
+
+        list_datas = []
+        for d in data:
+            new_data = cls(**d)
+            db.session.add(new_data)
+            db.session.commit()
+            list_datas.append(new_data)
+
+        return list_datas
+
     def update(self, *args, **kwargs):
         if set(kwargs.keys()).issubset(set(self.__dict__.keys())):
             if 'slug' and 'name' in kwargs.keys():

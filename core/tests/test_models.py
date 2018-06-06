@@ -29,16 +29,31 @@ def test_create_new_city_on_database(client):
 
 def test_list_new_cities_on_database(client):
     cities = [
-        City('Sao Luis', 'MA'),
-        City('Brasília', 'DF'),
-        City('Campina Grande', 'PB')
+        {'name': 'Parnaíba', 'uf': 'PI'},
+        {'name': 'Teresina', 'uf': 'PI'},
+        {'name': 'Campina Grande', 'uf': 'PB'}
     ]
-    db.session.bulk_save_objects(cities)
-    db.session.commit()
+    cities = City.save_all(cities)
+    assert len(cities) == 3
 
-    cities_count = City.query.count()
+    assert cities[0].name == 'Parnaíba'
+    assert cities[0].slug == 'parnaiba'
 
-    assert cities_count == 3
+    assert cities[1].name == 'Teresina'
+    assert cities[1].slug == 'teresina'
+
+    assert cities[2].name == 'Campina Grande'
+    assert cities[2].slug == 'campina-grande'
+
+
+def test_list_new_cities_on_database_with_error(client):
+    with pytest.raises(TypeError):
+        cities = set([
+            {'name': 'Parnaíba', 'uf': 'PI'},
+            {'name': 'Teresina', 'uf': 'PI'},
+            {'name': 'Campina Grande', 'uf': 'PB'}
+        ])
+        cities = City.save_all(cities)
 
 
 def test_update_city_on_database(client):
