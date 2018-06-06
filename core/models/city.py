@@ -15,6 +15,28 @@ class City(db.Model):
         self.uf = uf
         self.slug = slugify(name)
 
+    def save(self):
+        self.slug = slugify(self.name)
+        db.session.add(self)
+        db.session.commit()
+
+        return self
+
+    def update(self, *args, **kwargs):
+        if set(kwargs.keys()).issubset(set(self.__dict__.keys())):
+            if 'slug' and 'name' in kwargs.keys():
+                kwargs['slug'] = slugify(kwargs['name'])
+
+            for key in kwargs.keys():
+                setattr(self, key, kwargs[key])
+
+            db.session.commit()
+
+        else:
+            raise AttributeError
+
+        return self
+
 
 class CitySchema(ma.Schema):
 
