@@ -18,6 +18,7 @@ pytest-flask = "*"
 flask-restful = "*"
 python-slugify = "*"
 "psycopg2-binary" = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.6"
