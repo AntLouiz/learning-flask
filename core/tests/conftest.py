@@ -11,7 +11,6 @@ def client():
     with app.app_context():
         db.create_all()
 
-    print("Hey")
     yield client
 
     db.drop_all()
