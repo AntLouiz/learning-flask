@@ -1,4 +1,5 @@
 import pytest
+import sqlalchemy
 from core.base import db
 from core.models.city import City
 
@@ -25,6 +26,15 @@ def test_create_new_city_on_database(client):
     cities = City.query.first()
 
     assert cities.name == 'Teresina'
+
+
+def test_create_new_city_with_the_same_name(client):
+    new_city = City('Sao Luis', 'MA')
+    new_city.save()
+
+    with pytest.raises(sqlalchemy.exc.IntegrityError):
+        same_name_city = City('Sao Luis', 'MA')
+        same_name_city.save()
 
 
 def test_list_new_cities_on_database(client):

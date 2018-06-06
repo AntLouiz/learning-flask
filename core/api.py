@@ -1,5 +1,5 @@
-from base import db
-from resources import app
+from core.base import db
+from core.resources import app
 
 db.create_all(app=app)
 

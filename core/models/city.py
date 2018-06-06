@@ -6,7 +6,7 @@ class City(db.Model):
     """A class that represents the table City"""
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     slug = db.Column(db.String)
     uf = db.Column(db.String(2))
 
