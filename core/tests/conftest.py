@@ -1,16 +1,15 @@
 import pytest
 from core.base import create_app, db
+from core.resources import app
 
 
 @pytest.fixture
 def client():
-    app = create_app(test=True)
+    app.config['TESTING'] = True
     client = app.test_client()
-    app.app_context().push()
 
     with app.app_context():
-        db.create_all()
-
-    yield client
+        db.create_all(app=app)
+        yield client
 
     db.drop_all()

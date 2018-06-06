@@ -16,6 +16,7 @@ slugify = "*"
 flask-migrate = "*"
 pytest-flask = "*"
 flask-restful = "*"
+python-slugify = "*"
 
 [requires]
 python_version = "3.6"

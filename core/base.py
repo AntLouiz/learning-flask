@@ -9,9 +9,12 @@ db = SQLAlchemy()
 
 def create_app(test=False):
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_BINDS'] = {
+        'devlopment': DB_URI,
+        'test': TEST_DB_URI
+    }
 
     if not test:
         app.config['SQL_ALCHEMY_DATABASE_URI'] = DB_URI
