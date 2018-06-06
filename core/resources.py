@@ -14,10 +14,14 @@ class CityResource(Resource):
         return jsonify(result.data)
 
     def post(self):
-        new_city = City(request.form['name'], request.form['uf'])
-        db.session.add(new_city)
-        db.session.commit()
 
+        if City.query.filter_by(name=request.form['name']).scalar():
+            response = jsonify({'message': 'This city already exists.'})
+            response.status_code = 409
+            return response
+
+        new_city = City(request.form['name'], request.form['uf'])
+        new_city.save()
         result = city_schema.dump(new_city)
         response = jsonify(result.data)
         response.status_code = 201

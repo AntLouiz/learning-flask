@@ -74,3 +74,23 @@ def test_post_many_cities(client):
 
     assert response.status_code == 201
     assert city.name == cities[2]['name']
+
+
+def test_post_cities_with_same_name(client):
+    city = {'name': 'Fortaleza', 'uf': 'CE'}
+
+    response = client.post('/cities', data=city)
+
+    assert response.status_code == 201
+
+    response = client.post('/cities', data=city)
+    data = json.loads(response.data)
+
+    """
+        409 Conflict: Indicates that the request could not 
+        be processed because of conflict in the request, such 
+        as an edit conflict.
+    """
+
+    assert response.status_code == 409
+    assert data['message'] == 'This city already exists.'
