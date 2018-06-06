@@ -1,4 +1,4 @@
-from base import create_app, db
+from base import db
 from resources import app
 
 db.create_all(app=app)
