@@ -1,6 +1,5 @@
 import pytest
 import sqlalchemy
-from core.base import db
 from core.models.city import City
 
 

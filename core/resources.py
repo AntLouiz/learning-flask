@@ -1,7 +1,7 @@
 from flask_restful import Resource, Api
 from flask import request, jsonify
 from core.models.city import City, city_schema, cities_schema
-from core.base import app, db
+from core.base import app
 
 api = Api(app)
 
