@@ -1,5 +1,5 @@
 import pytest
-from core.base import create_app, db
+from core.base import db
 from core.resources import app
 
 
