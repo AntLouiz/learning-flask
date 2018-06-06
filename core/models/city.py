@@ -37,6 +37,12 @@ class City(db.Model):
 
         return self
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+        return True
+
 
 class CitySchema(ma.Schema):
 

@@ -65,3 +65,15 @@ def test_update_city_on_database_with_error(client):
 
         city = City.query.filter_by(name='Parnaíba').first()
         city.update(some_unknow_attr='some_attr')
+
+
+def test_delete_city_on_database(client):
+    city = City('Timon', 'PI')
+    city.save()
+
+    city = City.query.filter_by(name='Timon').first()
+    city.delete()
+
+    count_search_city = City.query.filter_by(name='Timon').count()
+
+    assert count_search_city == 0
