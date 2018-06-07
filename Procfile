@@ -1,1 +1,1 @@
-web: gunicorn learning_flask:core.api
+web: gunicorn core:api
