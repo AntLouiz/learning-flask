@@ -3,7 +3,7 @@ from core.base import db
 from core.resources import app
 
 
-#heroku = Heroku(app)
+heroku = Heroku(app)
 db.create_all()
 
 print(db)
