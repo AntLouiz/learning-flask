@@ -20,9 +20,7 @@ def create_app(test=False):
         'test': TEST_DB_URI
     }
 
-    if not test:
-        app.config['SQL_ALCHEMY_DATABASE_URI'] = 'postgres://wumsefgkxgonss:4bcb08540bfb80f7f1a4f45424ac5d99a8949db7b360ba39618c1f63979bfa3e@ec2-54-204-18-53.compute-1.amazonaws.com:5432/d9661451o3plqo'
-    else:
+    if test:
         app.config['SQL_ALCHEMY_DATABASE_URI'] = TEST_DB_URI
         app.config['TESTING'] = True
 
