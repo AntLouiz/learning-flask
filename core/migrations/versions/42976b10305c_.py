@@ -1,7 +1,7 @@
 """empty message
 
 Revision ID: 42976b10305c
-Revises: 
+Revises:
 Create Date: 2018-06-06 10:27:10.829845
 
 """
