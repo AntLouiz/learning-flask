@@ -1,13 +1,12 @@
 import pytest
 from core.base import db
 from core.resources import app
-from core.settings import TEST_DB_URI
+from core.config import TestingConfig
 
 
 @pytest.fixture
 def client():
-    app.config['TESTING'] = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = TEST_DB_URI
+    app.config.from_object(TestingConfig)
     client = app.test_client()
 
     with app.app_context():
