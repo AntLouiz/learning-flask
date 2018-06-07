@@ -1,7 +1,7 @@
 import pytest
 from core.base import db
 from core.resources import app
-from core.settings import DB_URI, TEST_DB_URI
+from core.settings import TEST_DB_URI
 
 
 @pytest.fixture
