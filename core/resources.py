@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import request, jsonify
 from core.models.city import City, city_schema, cities_schema
-from core.models.user import User
+from core.models.user import User, users_schema
 
 
 class CityResource(Resource):
@@ -35,26 +35,35 @@ parser.add_argument('password', help='This field cannot be blank', required=True
 class UserRegistration(Resource):
     def post(self):
         data = parser.parse_args()
-        return data
-
-
-class UserLogin(Resource):
-    def post(self):
-        data = parser.parse_args()
-
-        if User.query.filter_by(name=request.form['username']).scalar():
-            response = jsonify({'message': 'This user already exists.'})
+        if User.query.filter_by(username=data['username']).scalar():
+            response = jsonify({'message': 'The user {} already exists.'.format(data['username'])})
             response.status_code = 409
             return response
 
         new_user = User(
             username=data['username'],
-            password=data['password']
+            password=User.generate_hash(data['password'])
         )
 
         new_user.save()
 
         return {'message': 'The user {} was created.'.format(data['username'])}
+
+
+class UserLogin(Resource):
+    def post(self):
+        data = parser.parse_args()
+        current_user = User.query.filter_by(username=data['username']).first()
+
+        if not current_user:
+            return {'message': 'User {} doesn\'t exist'.format(data['username'])}
+
+        try:
+            User.verify_hash(data['password'], current_user.password)
+            return {'message': 'Logged in as {}'.format(current_user.username)}
+
+        except ValueError:
+            return {'message': 'Wrong credentials'}
 
 class UserLogoutAccess(Resource):
     def post(self):
@@ -70,7 +79,10 @@ class TokenRefresh(Resource):
 
 class AllUsers(Resource):
     def get(self):
-        return {'users': []}
+        result = users_schema.dump(User.query.all())
+        users = jsonify(result.data)
+
+        return users
 
 class SecretResource(Resource):
     def get(self):
