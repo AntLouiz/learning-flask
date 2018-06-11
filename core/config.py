@@ -9,13 +9,13 @@ class BaseConfig(object):
 class ProductionConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = DB_URI
     DEBUG = True
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = DB_URI
     DEBUG = True
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class TestingConfig(BaseConfig):
