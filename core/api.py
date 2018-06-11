@@ -1,7 +1,7 @@
 from flask_heroku import Heroku
 from flask_restful import Api
 from core.base import db, app
-from resources import CityResource
+from core.resources import CityResource
 
 
 heroku = Heroku(app)
