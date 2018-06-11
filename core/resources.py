@@ -2,15 +2,26 @@ from flask_restful import Resource, reqparse
 from flask import request, jsonify
 from core.models.city import City, city_schema, cities_schema
 from core.models.user import User, users_schema
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    jwt_required,
+    jwt_refresh_token_required,
+    get_jwt_identity,
+    get_raw_jwt
+)
 
 
 class CityResource(Resource):
+
+    @jwt_required
     def get(self):
         cities = City.query.all()
         result = cities_schema.dump(cities)
 
         return jsonify(result.data)
 
+    @jwt_required
     def post(self):
 
         if City.query.filter_by(name=request.form['name']).scalar():
@@ -47,7 +58,14 @@ class UserRegistration(Resource):
 
         new_user.save()
 
-        return {'message': 'The user {} was created.'.format(data['username'])}
+        access_token = create_access_token(identity=data['username'])
+        refresh_token = create_refresh_token(identity=data['username'])
+
+        return {
+            'message': 'User {} was created.'.format(data['username']),
+            'access_token': access_token,
+            'refresh_token': refresh_token
+        }
 
 
 class UserLogin(Resource):
@@ -60,7 +78,14 @@ class UserLogin(Resource):
 
         try:
             User.verify_hash(data['password'], current_user.password)
-            return {'message': 'Logged in as {}'.format(current_user.username)}
+            access_token = create_access_token(identity=data['username'])
+            refresh_token = create_refresh_token(identity=data['username'])
+
+            return {
+                'message': 'Logged in as {}.'.format(current_user.username),
+                'access_token': access_token,
+                'refresh_token': refresh_token
+            }
 
         except ValueError:
             return {'message': 'Wrong credentials'}
@@ -73,9 +98,14 @@ class UserLogoutRefresh(Resource):
     def post(self):
         return {'message': 'User logout'}
 
+
 class TokenRefresh(Resource):
+
+    @jwt_refresh_token_required
     def post(self):
-        return {'message': 'Token refresh'}
+        current_user = get_jwt_identity()
+        access_token = create_access_token(identity=current_user)
+        return {'access_token': access_token}
 
 class AllUsers(Resource):
     def get(self):

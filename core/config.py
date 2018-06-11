@@ -1,9 +1,10 @@
-from core.settings import DB_URI, TEST_DB_URI
+from core.settings import DB_URI, TEST_DB_URI, JWT_SECRET_KEY
 
 
 class BaseConfig(object):
     DEBUG = False
     TESTING = False
+    JWT_SECRET_KEY = JWT_SECRET_KEY
 
 
 class ProductionConfig(BaseConfig):

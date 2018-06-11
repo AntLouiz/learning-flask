@@ -1,10 +1,12 @@
 from flask_heroku import Heroku
 from flask_restful import Api
+from flask_jwt_extended import JWTManager
 from core.base import db, app
 from core import resources
 
 
 heroku = Heroku(app)
+jwt = JWTManager(app)
 db.create_all()
 api = Api(app)
 
