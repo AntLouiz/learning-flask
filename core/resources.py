@@ -91,13 +91,45 @@ class UserLogin(Resource):
         except ValueError:
             return {'message': 'Wrong credentials'}
 
+
 class UserLogoutAccess(Resource):
+    @jwt_required
     def post(self):
-        return {'message': 'User logout access'}
+        jti = get_raw_jwt()['jti']
+
+        try:
+            revoked_token = RevokedToken(jti=jti)
+            revoked_token.add()
+            response = jsonify({'message': 'Access token has been revoked'})
+            response.status_code = 200
+
+            return response
+
+        except:
+            response = jsonify({'message': 'Something went wrong'})
+            response.status_code = 500
+
+            return response
+
 
 class UserLogoutRefresh(Resource):
+
+    @jwt_refresh_token_required
     def post(self):
-        return {'message': 'User logout'}
+        jti = get_raw_jwt()['jti']
+
+        try:
+            revoked_token = RevokedToken(jti=jti)
+            revoked_token.add()
+            response = jsonify({'message': 'Refresh token has been revoked'})
+            response.status_code = 200
+
+            return response
+
+        except:
+
+            response = jsonify({'message': 'Something went wrong'})
+            response.status_code = 500
 
 
 class TokenRefresh(Resource):
@@ -106,7 +138,9 @@ class TokenRefresh(Resource):
     def post(self):
         current_user = get_jwt_identity()
         access_token = create_access_token(identity=current_user)
-        return {'access_token': access_token}
+        response = jsonify({'access_token': access_token})
+
+        return response
 
 class AllUsers(Resource):
     def get(self):

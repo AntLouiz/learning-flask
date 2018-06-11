@@ -2,6 +2,7 @@ from flask_heroku import Heroku
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 from core.base import db, app
+from core.models.jwt import RevokedToken
 from core import resources
 
 
@@ -19,3 +20,9 @@ api.add_resource(resources.AllUsers, '/users')
 api.add_resource(resources.SecretResource, '/secret')
 
 api.add_resource(resources.CityResource, '/cities', methods=['GET', 'POST'])
+
+
+@jwt.token_in_blacklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+    jti = decrypted_token['jti']
+    return RevokedToken.is_jti_blacklisted(jti)
