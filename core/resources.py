@@ -141,16 +141,3 @@ class TokenRefresh(Resource):
         response = jsonify({'access_token': access_token})
 
         return response
-
-class AllUsers(Resource):
-    def get(self):
-        result = users_schema.dump(User.query.all())
-        users = jsonify(result.data)
-
-        return users
-
-class SecretResource(Resource):
-    def get(self):
-        return {
-            'answer': 42
-        }
