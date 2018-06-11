@@ -1,11 +1,12 @@
 from flask_heroku import Heroku
-from core.base import db
-from core.resources import app
+from flask_restful import Api
+from core.base import db, app
 
 
 heroku = Heroku(app)
 db.create_all()
+api = Api(app)
 
+from resources import CityResource
 
-if __name__ == '__main__':
-    app.run()
+api.add_resource(CityResource, '/cities', methods=['GET', 'POST'])

@@ -1,9 +1,6 @@
-from flask_restful import Resource, Api
+from flask_restful import Resource
 from flask import request, jsonify
 from core.models.city import City, city_schema, cities_schema
-from core.base import app
-
-api = Api(app)
 
 
 class CityResource(Resource):
@@ -27,6 +24,3 @@ class CityResource(Resource):
         response.status_code = 201
 
         return response
-
-
-api.add_resource(CityResource, '/cities', methods=['GET', 'POST'])
