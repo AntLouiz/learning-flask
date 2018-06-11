@@ -20,6 +20,8 @@ python-slugify = "*"
 "psycopg2-binary" = "*"
 gunicorn = "*"
 flask-heroku = "*"
+flask-jwt-extended = "*"
+passlib = "*"
 
 [requires]
 python_version = "3.6"
