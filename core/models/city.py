@@ -5,6 +5,8 @@ from core.base import db, ma
 class City(db.Model):
     """A class that represents the table City"""
 
+    __tablename__ = 'cities'
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
     slug = db.Column(db.String)
