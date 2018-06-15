@@ -5,6 +5,9 @@ class BaseConfig(object):
     DEBUG = False
     TESTING = False
     JWT_SECRET_KEY = JWT_SECRET_KEY
+    SQLALCHEMY_BINDS = {
+        'test': TEST_DB_URI
+    }
 
 
 class ProductionConfig(BaseConfig):
