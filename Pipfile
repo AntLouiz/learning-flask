@@ -22,6 +22,7 @@ gunicorn = "*"
 flask-heroku = "*"
 flask-jwt-extended = "*"
 passlib = "*"
+pyopenssl = "*"
 
 [requires]
 python_version = "3.6"
