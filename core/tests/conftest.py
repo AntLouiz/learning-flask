@@ -1,6 +1,6 @@
 import pytest
 from core.base import db
-from core.resources import app
+from core.api import app
 from core.config import TestingConfig
 
 
