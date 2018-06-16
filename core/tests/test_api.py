@@ -1,5 +1,42 @@
 import json
+import pytest
 from core.models.city import City
+
+
+@pytest.mark.auth
+def test_register_new_user(client):
+    response = client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': 'somePassword'
+        }
+    )
+
+    assert response.status_code == 200
+    assert json.loads(response.data)['message'] == 'User someUser was created.'
+
+
+@pytest.mark.auth
+def test_register_existing_user(client):
+    client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': 'somePassword'
+        }
+    )
+
+    response = client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': 'somePassword'
+        }
+    )
+
+    assert response.status_code == 409
+    assert json.loads(response.data)['message'] == 'The user someUser already exists.'
 
 
 def test_get_cities(client):
