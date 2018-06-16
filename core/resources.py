@@ -75,21 +75,25 @@ class UserLogin(Resource):
         current_user = User.query.filter_by(username=data['username']).first()
 
         if not current_user:
-            return {'message': 'User {} doesn\'t exist'.format(data['username'])}
+            return {'message': 'User {} doesn\'t exist.'.format(data['username'])}, 400
+
+        error_message = {'message': 'Wrong credentials.'}, 400
 
         try:
-            User.verify_hash(data['password'], current_user.password)
-            access_token = create_access_token(identity=data['username'])
-            refresh_token = create_refresh_token(identity=data['username'])
+            if User.verify_hash(data['password'], current_user.password):
+                access_token = create_access_token(identity=data['username'])
+                refresh_token = create_refresh_token(identity=data['username'])
 
-            return {
-                'message': 'Logged in as {}.'.format(current_user.username),
-                'access_token': access_token,
-                'refresh_token': refresh_token
-            }
+                return {
+                    'message': 'Logged in as {}.'.format(current_user.username),
+                    'access_token': access_token,
+                    'refresh_token': refresh_token
+                }
+
+            return error_message
 
         except ValueError:
-            return {'message': 'Wrong credentials'}
+            return error_message
 
 
 class UserLogoutAccess(Resource):

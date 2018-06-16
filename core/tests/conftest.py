@@ -1,4 +1,5 @@
 import pytest
+import json
 from core.base import db
 from core.api import app
 from core.config import TestingConfig
@@ -11,6 +12,18 @@ def client():
 
     with app.app_context():
         db.create_all(app=app)
+        response = client.post(
+            '/registration',
+            data={
+                'username': 'test',
+                'password': 'test'
+            }
+        )
+        client.auth_header = {
+            'Authorization': 'Bearer {}'.format(
+                json.loads(response.data)['access_token']
+            )
+        }
         yield client
 
     db.drop_all()

@@ -1,55 +1,205 @@
 import json
+import pytest
 from core.models.city import City
 
 
+@pytest.mark.auth
+def test_register_new_user(client):
+    response = client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': 'somePassword'
+        }
+    )
+
+    assert response.status_code == 200
+    assert json.loads(response.data)['message'] == 'User someUser was created.'
+
+
+@pytest.mark.auth
+def test_register_existing_user(client):
+    client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': 'somePassword'
+        }
+    )
+
+    response = client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': 'somePassword'
+        }
+    )
+
+    assert response.status_code == 409
+    assert json.loads(response.data)['message'] == 'The user someUser already exists.'
+
+
+@pytest.mark.auth
+def test_register_with_error(client):
+    response = client.post(
+        '/registration',
+        data={
+            'username': None,
+            'password': None
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message']['username'] == 'This field cannot be blank'
+
+    response = client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': None
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message']['password'] == 'This field cannot be blank'
+
+    response = client.post(
+        '/registration',
+        data={
+            'username': None,
+            'password': 'somepassword'
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message']['username'] == 'This field cannot be blank'
+
+
+@pytest.mark.auth
+def test_user_login_with_success(client):
+    username = 'someUsername'
+    password = 'somepassword'
+
+    client.post(
+        '/registration',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    response = client.post(
+        '/login',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    assert response.status_code == 200
+    assert json.loads(response.data)['message'] == 'Logged in as {}.'.format(username)
+
+
+@pytest.mark.auth
+def test_user_login_does_exist(client):
+    username = 'someUsername'
+    unknownUsername = 'someUnknownUsername'
+    password = 'somepassword'
+
+    client.post(
+        '/registration',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    response = client.post(
+        '/login',
+        data={
+            'username': unknownUsername,
+            'password': password
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message'] == 'User {} doesn\'t exist.'.format(unknownUsername)
+
+
+@pytest.mark.auth
+def test_user_login_does_wrong_credentials(client):
+    username = 'someUsername'
+    password = 'somepassword'
+
+    client.post(
+        '/registration',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    response = client.post(
+        '/login',
+        data={
+            'username': username,
+            'password': '123'
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message'] == 'Wrong credentials.'
+
+
+@pytest.mark.resources
 def test_get_cities(client):
-    with client:
-        response = client.get('/cities')
-        assert response.status_code == 200
+    response = client.get('/cities', headers=client.auth_header)
+    assert response.status_code == 200
 
 
+@pytest.mark.resources
 def test_get_cities_data(client):
-    with client:
-        new_city = City('Parnaíba', 'PI')
-        new_city.save()
+    new_city = City('Parnaíba', 'PI')
+    new_city.save()
 
-        response = client.get('/cities')
+    response = client.get('/cities', headers=client.auth_header)
 
-        data = json.loads(response.data)
+    data = json.loads(response.data)
 
-        assert len(data) == 1
-        assert data[0]['name'] == 'Parnaíba'
+    assert len(data) == 1
+    assert data[0]['name'] == 'Parnaíba'
 
 
+@pytest.mark.resources
 def test_get_cities_many_data(client):
-    with client:
-        cities = [
-            {'name': 'Fortaleza', 'uf': 'CE'},
-            {'name': 'Teresina', 'uf': 'PI'},
-            {'name': 'Joao Pessoa', 'uf': 'PB'}
-        ]
-        cities = City.save_all(cities)
+    cities = [
+        {'name': 'Fortaleza', 'uf': 'CE'},
+        {'name': 'Teresina', 'uf': 'PI'},
+        {'name': 'Joao Pessoa', 'uf': 'PB'}
+    ]
+    cities = City.save_all(cities)
 
-        response = client.get('/cities')
+    response = client.get('/cities', headers=client.auth_header)
 
-        data = json.loads(response.data)
+    data = json.loads(response.data)
 
-        assert len(data) == 3
-        assert data[0]['slug'] == 'fortaleza'
-        assert data[1]['slug'] == 'teresina'
-        assert data[2]['slug'] == 'joao-pessoa'
+    assert len(data) == 3
+    assert data[0]['slug'] == 'fortaleza'
+    assert data[1]['slug'] == 'teresina'
+    assert data[2]['slug'] == 'joao-pessoa'
 
 
+@pytest.mark.resources
 def test_post_city_data(client):
-    with client:
-        city = {'name': 'Fortaleza', 'uf': 'CE'}
-        response = client.post('/cities', data=city)
-        city = City.query.filter_by(slug='fortaleza').first()
+    city = {'name': 'Fortaleza', 'uf': 'CE'}
+    response = client.post('/cities', data=city, headers=client.auth_header)
+    city = City.query.filter_by(slug='fortaleza').first()
 
-        assert response.status_code == 201
-        assert city.name == 'Fortaleza'
+    assert response.status_code == 201
+    assert city.name == 'Fortaleza'
 
 
+@pytest.mark.resources
 def test_post_many_cities(client):
     cities = [
         {'name': 'Fortaleza', 'uf': 'CE'},
@@ -57,33 +207,34 @@ def test_post_many_cities(client):
         {'name': 'Joao Pessoa', 'uf': 'PB'}
     ]
 
-    response = client.post('/cities', data=cities[0])
+    response = client.post('/cities', data=cities[0], headers=client.auth_header)
     city = City.query.filter_by(name=cities[0]['name']).first()
 
     assert response.status_code == 201
     assert city.name == cities[0]['name']
 
-    response = client.post('/cities', data=cities[1])
+    response = client.post('/cities', data=cities[1], headers=client.auth_header)
     city = City.query.filter_by(name=cities[1]['name']).first()
 
     assert response.status_code == 201
     assert city.name == cities[1]['name']
 
-    response = client.post('/cities', data=cities[2])
+    response = client.post('/cities', data=cities[2], headers=client.auth_header)
     city = City.query.filter_by(name=cities[2]['name']).first()
 
     assert response.status_code == 201
     assert city.name == cities[2]['name']
 
 
+@pytest.mark.resources
 def test_post_cities_with_same_name(client):
     city = {'name': 'Fortaleza', 'uf': 'CE'}
 
-    response = client.post('/cities', data=city)
+    response = client.post('/cities', data=city, headers=client.auth_header)
 
     assert response.status_code == 201
 
-    response = client.post('/cities', data=city)
+    response = client.post('/cities', data=city, headers=client.auth_header)
     data = json.loads(response.data)
 
     """
