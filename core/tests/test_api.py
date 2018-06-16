@@ -4,7 +4,7 @@ from core.models.city import City
 
 def test_get_cities(client):
     with client:
-        response = client.get('/cities')
+        response = client.get('/cities', headers=client.auth_header)
         assert response.status_code == 200
 
 
@@ -13,7 +13,7 @@ def test_get_cities_data(client):
         new_city = City('Parnaíba', 'PI')
         new_city.save()
 
-        response = client.get('/cities')
+        response = client.get('/cities', headers=client.auth_header)
 
         data = json.loads(response.data)
 
@@ -30,7 +30,7 @@ def test_get_cities_many_data(client):
         ]
         cities = City.save_all(cities)
 
-        response = client.get('/cities')
+        response = client.get('/cities', headers=client.auth_header)
 
         data = json.loads(response.data)
 
@@ -43,7 +43,7 @@ def test_get_cities_many_data(client):
 def test_post_city_data(client):
     with client:
         city = {'name': 'Fortaleza', 'uf': 'CE'}
-        response = client.post('/cities', data=city)
+        response = client.post('/cities', data=city, headers=client.auth_header)
         city = City.query.filter_by(slug='fortaleza').first()
 
         assert response.status_code == 201
@@ -57,19 +57,19 @@ def test_post_many_cities(client):
         {'name': 'Joao Pessoa', 'uf': 'PB'}
     ]
 
-    response = client.post('/cities', data=cities[0])
+    response = client.post('/cities', data=cities[0], headers=client.auth_header)
     city = City.query.filter_by(name=cities[0]['name']).first()
 
     assert response.status_code == 201
     assert city.name == cities[0]['name']
 
-    response = client.post('/cities', data=cities[1])
+    response = client.post('/cities', data=cities[1], headers=client.auth_header)
     city = City.query.filter_by(name=cities[1]['name']).first()
 
     assert response.status_code == 201
     assert city.name == cities[1]['name']
 
-    response = client.post('/cities', data=cities[2])
+    response = client.post('/cities', data=cities[2], headers=client.auth_header)
     city = City.query.filter_by(name=cities[2]['name']).first()
 
     assert response.status_code == 201
@@ -79,11 +79,11 @@ def test_post_many_cities(client):
 def test_post_cities_with_same_name(client):
     city = {'name': 'Fortaleza', 'uf': 'CE'}
 
-    response = client.post('/cities', data=city)
+    response = client.post('/cities', data=city, headers=client.auth_header)
 
     assert response.status_code == 201
 
-    response = client.post('/cities', data=city)
+    response = client.post('/cities', data=city, headers=client.auth_header)
     data = json.loads(response.data)
 
     """
