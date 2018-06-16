@@ -39,11 +39,13 @@ def test_register_existing_user(client):
     assert json.loads(response.data)['message'] == 'The user someUser already exists.'
 
 
+@pytest.mark.resources
 def test_get_cities(client):
     response = client.get('/cities', headers=client.auth_header)
     assert response.status_code == 200
 
 
+@pytest.mark.resources
 def test_get_cities_data(client):
     new_city = City('Parnaíba', 'PI')
     new_city.save()
@@ -56,6 +58,7 @@ def test_get_cities_data(client):
     assert data[0]['name'] == 'Parnaíba'
 
 
+@pytest.mark.resources
 def test_get_cities_many_data(client):
     cities = [
         {'name': 'Fortaleza', 'uf': 'CE'},
@@ -74,6 +77,7 @@ def test_get_cities_many_data(client):
     assert data[2]['slug'] == 'joao-pessoa'
 
 
+@pytest.mark.resources
 def test_post_city_data(client):
     city = {'name': 'Fortaleza', 'uf': 'CE'}
     response = client.post('/cities', data=city, headers=client.auth_header)
@@ -83,6 +87,7 @@ def test_post_city_data(client):
     assert city.name == 'Fortaleza'
 
 
+@pytest.mark.resources
 def test_post_many_cities(client):
     cities = [
         {'name': 'Fortaleza', 'uf': 'CE'},
@@ -109,6 +114,7 @@ def test_post_many_cities(client):
     assert city.name == cities[2]['name']
 
 
+@pytest.mark.resources
 def test_post_cities_with_same_name(client):
     city = {'name': 'Fortaleza', 'uf': 'CE'}
 
