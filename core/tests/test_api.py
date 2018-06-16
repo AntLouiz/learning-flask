@@ -39,6 +39,42 @@ def test_register_existing_user(client):
     assert json.loads(response.data)['message'] == 'The user someUser already exists.'
 
 
+@pytest.mark.auth
+def test_register_with_error(client):
+    response = client.post(
+        '/registration',
+        data={
+            'username': None,
+            'password': None
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message']['username'] == 'This field cannot be blank'
+
+    response = client.post(
+        '/registration',
+        data={
+            'username': 'someUser',
+            'password': None
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message']['password'] == 'This field cannot be blank'
+
+    response = client.post(
+        '/registration',
+        data={
+            'username': None,
+            'password': 'somepassword'
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message']['username'] == 'This field cannot be blank'
+
+
 @pytest.mark.resources
 def test_get_cities(client):
     response = client.get('/cities', headers=client.auth_header)
