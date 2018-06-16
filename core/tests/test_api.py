@@ -75,6 +75,82 @@ def test_register_with_error(client):
     assert json.loads(response.data)['message']['username'] == 'This field cannot be blank'
 
 
+@pytest.mark.auth
+def test_user_login_with_success(client):
+    username = 'someUsername'
+    password = 'somepassword'
+
+    client.post(
+        '/registration',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    response = client.post(
+        '/login',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    assert response.status_code == 200
+    assert json.loads(response.data)['message'] == 'Logged in as {}.'.format(username)
+
+
+@pytest.mark.auth
+def test_user_login_does_exist(client):
+    username = 'someUsername'
+    unknownUsername = 'someUnknownUsername'
+    password = 'somepassword'
+
+    client.post(
+        '/registration',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    response = client.post(
+        '/login',
+        data={
+            'username': unknownUsername,
+            'password': password
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message'] == 'User {} doesn\'t exist.'.format(unknownUsername)
+
+
+@pytest.mark.auth
+def test_user_login_does_wrong_credentials(client):
+    username = 'someUsername'
+    password = 'somepassword'
+
+    client.post(
+        '/registration',
+        data={
+            'username': username,
+            'password': password
+        }
+    )
+
+    response = client.post(
+        '/login',
+        data={
+            'username': username,
+            'password': '123'
+        }
+    )
+
+    assert response.status_code == 400
+    assert json.loads(response.data)['message'] == 'Wrong credentials.'
+
+
 @pytest.mark.resources
 def test_get_cities(client):
     response = client.get('/cities', headers=client.auth_header)
