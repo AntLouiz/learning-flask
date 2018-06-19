@@ -3,13 +3,13 @@ import sqlalchemy
 from core.models.city import City, city_schema, cities_schema
 
 
-def test_create_new_city(client):
+def test_create_new_city(init_db):
     new_city = City(name='Parnaíba', uf='PI')
 
     assert new_city.name == 'Parnaíba'
 
 
-def test_save_city_method(client):
+def test_save_city_method(init_db):
     new_city = City(name='Parnaíba', uf='PI')
     new_city.save()
 
@@ -18,7 +18,7 @@ def test_save_city_method(client):
     assert city.name == 'Parnaíba'
 
 
-def test_create_new_city_on_database(client):
+def test_create_new_city_on_database(init_db):
     new_city = City(name='Teresina', uf='PI')
     new_city.save()
 
@@ -27,7 +27,7 @@ def test_create_new_city_on_database(client):
     assert cities.name == 'Teresina'
 
 
-def test_create_new_city_with_the_same_name(client):
+def test_create_new_city_with_the_same_name(init_db):
     new_city = City('Sao Luis', 'MA')
     new_city.save()
 
@@ -36,7 +36,7 @@ def test_create_new_city_with_the_same_name(client):
         same_name_city.save()
 
 
-def test_list_new_cities_on_database(client):
+def test_list_new_cities_on_database(init_db):
     cities = [
         {'name': 'Parnaíba', 'uf': 'PI'},
         {'name': 'Teresina', 'uf': 'PI'},
@@ -55,7 +55,7 @@ def test_list_new_cities_on_database(client):
     assert cities[2].slug == 'campina-grande'
 
 
-def test_list_new_cities_on_database_with_error(client):
+def test_list_new_cities_on_database_with_error(init_db):
     with pytest.raises(TypeError):
         cities = set([
             {'name': 'Parnaíba', 'uf': 'PI'},
@@ -65,7 +65,7 @@ def test_list_new_cities_on_database_with_error(client):
         cities = City.save_all(cities)
 
 
-def test_update_city_on_database(client):
+def test_update_city_on_database(init_db):
     city = City('Parnaíba', 'PI')
     city.save()
 
@@ -81,7 +81,7 @@ def test_update_city_on_database(client):
     assert city.uf == 'CE'
 
 
-def test_update_city_on_database_with_error(client):
+def test_update_city_on_database_with_error(init_db):
 
     with pytest.raises(AttributeError):
         city = City('Parnaíba', 'PI')
@@ -91,7 +91,7 @@ def test_update_city_on_database_with_error(client):
         city.update(some_unknow_attr='some_attr')
 
 
-def test_delete_city_on_database(client):
+def test_delete_city_on_database(init_db):
     city = City('Timon', 'PI')
     city.save()
 
@@ -103,7 +103,7 @@ def test_delete_city_on_database(client):
     assert count_search_city == 0
 
 
-def test_city_schema(client):
+def test_city_schema(init_db):
     new_city = City(name='Parnaíba', uf='PI')
     new_city.save()
 
@@ -112,7 +112,7 @@ def test_city_schema(client):
     assert result.data == {'name': 'Parnaíba', 'uf': 'PI', 'slug': 'parnaiba'}
 
 
-def test_cities_schema(client):
+def test_cities_schema(init_db):
     cities = [
         {'name': 'Pedro II', 'uf': 'PI'},
         {'name': 'Brasília', 'uf': 'DF'},

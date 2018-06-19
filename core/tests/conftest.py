@@ -6,6 +6,15 @@ from core.config import TestingConfig
 
 
 @pytest.fixture
+def init_db():
+    with app.app_context():
+        db.create_all(app=app)
+        yield db
+
+    db.drop_all()
+
+
+@pytest.fixture
 def client():
     app.config.from_object(TestingConfig)
     client = app.test_client()
