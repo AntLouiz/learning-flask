@@ -7,6 +7,8 @@ def test_create_new_city(init_db):
     new_city = City(name='Parnaíba', uf='PI')
 
     assert new_city.name == 'Parnaíba'
+    assert new_city.uf == 'PI'
+    assert new_city.slug == 'parnaiba'
 
 
 def test_save_city_method(init_db):
