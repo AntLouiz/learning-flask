@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy.exc import IntegrityError
 from passlib.hash import pbkdf2_sha256 as sha256
-from core.models.user import User, user_schema, users_schema
+from core.models.user import User, user_schema
 
 
 @pytest.fixture

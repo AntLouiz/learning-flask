@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from flask import request, jsonify
 from core.models.city import City, city_schema, cities_schema
-from core.models.user import User, users_schema
+from core.models.user import User
 from core.models.jwt import RevokedToken
 from flask_jwt_extended import (
     create_access_token,
