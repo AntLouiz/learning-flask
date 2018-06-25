@@ -19,3 +19,12 @@ def test_new_revoked_token_on_database(init_db):
     revoked_token = RevokedToken.query.filter_by(jti=jti).first()
 
     assert revoked_token.jti == jti
+
+
+def test_is_jti_blacklisted_class_method(init_db):
+    jti = create_access_token(identity='AntLouiz')
+    jti = get_jti(jti)
+    new_revoked_token = RevokedToken(jti=jti)
+    new_revoked_token.add()
+
+    assert RevokedToken.is_jti_blacklisted(jti)
