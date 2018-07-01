@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse
 from flask import request, jsonify
+from core.base import images
 from core.models.city import City, city_schema, cities_schema
 from core.models.user import User
 from core.models.jwt import RevokedToken
@@ -37,6 +38,14 @@ class CityResource(Resource):
         response.status_code = 201
 
         return response
+
+    @jwt_required
+    def put(self):
+        if request.files['city_image']:
+            image_filename = images.save(request.files['city_image'])
+            image_url = images.url(image_filename)
+
+        return {'image_url': image_url}, 201
 
 
 parser = reqparse.RequestParser()

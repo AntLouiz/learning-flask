@@ -1,3 +1,4 @@
+import os.path
 from core.settings import DB_URI, TEST_DB_URI, JWT_SECRET_KEY
 
 
@@ -8,6 +9,16 @@ class BaseConfig(object):
     SQLALCHEMY_BINDS = {
         'test': TEST_DB_URI
     }
+    UPLOADS_DEFAULT_DEST = os.path.join(
+        os.path.abspath('core'),
+        'uploads'
+    )
+    UPLOADS_DEFAULT_URL = 'https://localhost:8000/uploads/'
+    UPLOADED_DEFAULT_DEST = os.path.join(
+        os.path.abspath('core'),
+        'uploads'
+    )
+    UPLOADED_DEFAULT_URL = 'https://localhost:8000/uploads/'
 
 
 class ProductionConfig(BaseConfig):

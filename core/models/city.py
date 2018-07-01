@@ -1,5 +1,5 @@
 from slugify import slugify
-from core.base import db, ma
+from core.base import db, ma, images
 
 
 class City(db.Model):
@@ -11,6 +11,7 @@ class City(db.Model):
     name = db.Column(db.String, unique=True)
     slug = db.Column(db.String)
     uf = db.Column(db.String(2))
+    image_url = db.Column(db.String)
 
     def __init__(self, name, uf, *args, **kwargs):
         self.name = name
@@ -19,6 +20,7 @@ class City(db.Model):
 
     def save(self):
         self.slug = slugify(self.name)
+        self.image_url = images.url('default.png')
         db.session.add(self)
         db.session.commit()
 
@@ -63,7 +65,7 @@ class City(db.Model):
 class CitySchema(ma.Schema):
 
     class Meta:
-        fields = ('name', 'uf', 'slug')
+        fields = ('name', 'uf', 'slug', 'image_url')
 
 
 city_schema = CitySchema()

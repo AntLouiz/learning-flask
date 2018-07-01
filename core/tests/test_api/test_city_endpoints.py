@@ -1,5 +1,8 @@
 import json
+import os.path
 import pytest
+import tempfile
+from core.base import images
 from core.models.city import City
 
 
@@ -97,3 +100,48 @@ def test_post_cities_with_same_name(client):
 
     assert response.status_code == 409
     assert data['message'] == 'This city already exists.'
+
+
+def test_get_city_default_image_url(client):
+    city = {'name': 'Fortaleza', 'uf': 'CE'}
+
+    response = client.post('/cities', data=city, headers=client.auth_header)
+    data = json.loads(response.data)
+
+    assert data['image_url'] == 'https://localhost:8000/uploads/images/default.png'
+
+
+def test_city_default_image_is_in_path(client):
+    city = {'name': 'Fortaleza', 'uf': 'CE'}
+
+    response = client.post('/cities', data=city, headers=client.auth_header)
+    data = json.loads(response.data)
+
+    image_default_name = data['image_url'].split('/')[-1]
+
+    image_path = images.path(image_default_name)
+
+    assert os.path.exists(image_path)
+
+
+def test_city_update_image_with_put(client):
+    city = {'name': 'Fortaleza', 'uf': 'CE'}
+
+    response = client.post('/cities', data=city, headers=client.auth_header)
+    data = json.loads(response.data)
+
+    temp_image = tempfile.NamedTemporaryFile(suffix=".png")
+    temp_image_name = temp_image.name[1:].replace('/', '_')
+
+    response = client.put(
+        '/cities',
+        data={'name': 'Fortaleza', 'city_image': temp_image},
+        content_type='multipart/form-data',
+        headers=client.auth_header
+    )
+
+    assert response.status_code == 201
+
+    data = json.loads(response.data)
+
+    assert data['image_url'] == 'https://localhost:8000/uploads/images/{}'.format(temp_image_name)
