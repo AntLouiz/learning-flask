@@ -34,8 +34,7 @@ class City(db.Model):
         list_datas = []
         for d in data:
             new_data = cls(**d)
-            db.session.add(new_data)
-            db.session.commit()
+            new_data.save()
             list_datas.append(new_data)
 
         return list_datas
