@@ -17,7 +17,7 @@ api.add_resource(resources.UserLogoutAccess, '/logout/access')
 api.add_resource(resources.UserLogoutRefresh, '/logout/refresh')
 api.add_resource(resources.TokenRefresh, '/token/refresh')
 
-api.add_resource(resources.CityResource, '/cities', methods=['GET', 'POST'])
+api.add_resource(resources.CityResource, '/cities', methods=['GET', 'POST', 'PUT'])
 
 
 @jwt.token_in_blacklist_loader

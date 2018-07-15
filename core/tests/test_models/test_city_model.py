@@ -49,12 +49,15 @@ def test_list_new_cities_on_database(init_db):
 
     assert cities[0].name == 'Parnaíba'
     assert cities[0].slug == 'parnaiba'
+    assert cities[0].image_url == 'https://localhost:8000/uploads/images/default.png'
 
     assert cities[1].name == 'Teresina'
     assert cities[1].slug == 'teresina'
+    assert cities[1].image_url == 'https://localhost:8000/uploads/images/default.png'
 
     assert cities[2].name == 'Campina Grande'
     assert cities[2].slug == 'campina-grande'
+    assert cities[2].image_url == 'https://localhost:8000/uploads/images/default.png'
 
 
 def test_list_new_cities_on_database_with_error(init_db):
@@ -81,6 +84,7 @@ def test_update_city_on_database(init_db):
     assert city.name == 'Fortaleza'
     assert city.slug == 'fortaleza'
     assert city.uf == 'CE'
+    assert city.image_url == 'https://localhost:8000/uploads/images/default.png'
 
 
 def test_update_city_on_database_with_error(init_db):
@@ -111,7 +115,12 @@ def test_city_schema(init_db):
 
     result = city_schema.dump(new_city)
 
-    assert result.data == {'name': 'Parnaíba', 'uf': 'PI', 'slug': 'parnaiba'}
+    assert result.data == {
+        'name': 'Parnaíba',
+        'uf': 'PI',
+        'slug': 'parnaiba',
+        'image_url': 'https://localhost:8000/uploads/images/default.png'
+    }
 
 
 def test_cities_schema(init_db):
@@ -124,6 +133,23 @@ def test_cities_schema(init_db):
 
     result = cities_schema.dump(cities)
 
-    assert result.data[0] == {'name': 'Pedro II', 'uf': 'PI', 'slug': 'pedro-ii'}
-    assert result.data[1] == {'name': 'Brasília', 'uf': 'DF', 'slug': 'brasilia'}
-    assert result.data[2] == {'name': 'Campina Grande', 'uf': 'PB', 'slug': 'campina-grande'}
+    print(result)
+
+    assert result.data[0] == {
+        'name': 'Pedro II',
+        'uf': 'PI',
+        'slug': 'pedro-ii',
+        'image_url': 'https://localhost:8000/uploads/images/default.png'
+    }
+    assert result.data[1] == {
+        'name': 'Brasília',
+        'uf': 'DF',
+        'slug': 'brasilia',
+        'image_url': 'https://localhost:8000/uploads/images/default.png'
+    }
+    assert result.data[2] == {
+        'name': 'Campina Grande',
+        'uf': 'PB',
+        'slug': 'campina-grande',
+        'image_url': 'https://localhost:8000/uploads/images/default.png'
+    }

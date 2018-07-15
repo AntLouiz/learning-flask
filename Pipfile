@@ -23,6 +23,7 @@ flask-heroku = "*"
 flask-jwt-extended = "*"
 passlib = "*"
 pyopenssl = "*"
+flask-uploads = "*"
 
 [requires]
 python_version = "3.6"
